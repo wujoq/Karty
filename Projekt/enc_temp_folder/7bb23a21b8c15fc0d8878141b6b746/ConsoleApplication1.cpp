@@ -212,6 +212,9 @@ int main()
 	while (Talia.size()>0)
 	{
 		cout << endl;
+
+
+
 		ja.Wolanie(ja.Reka, pc.Reka, Talia, ja.Stosy,pc.Stosy);
 		pc.Wolanie_komp(pc.Reka, ja.Reka, Talia, ja.Stosy, pc.Stosy);
 		wyswietlanie(ja.Reka, pc.Reka, ja.Stosy, pc.Stosy);
