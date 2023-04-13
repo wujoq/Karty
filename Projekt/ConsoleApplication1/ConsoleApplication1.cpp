@@ -37,6 +37,7 @@ public:
 		{
 			co = r[i].substr(0, r[i].size() - 1);
 			if (IleNaRece(co, r)==4) {
+				s.push_back(co);
 				for (int j = 0; j < r.size(); j++)
 				{
 					if (co == r[j].substr(0, r[j].size() - 1)) {
@@ -44,25 +45,28 @@ public:
 						j--;
 					}
 				}
-				s.push_back(co);
+				
 			}
 		}
 		
 	}
-	void Dobierz(vector<string>& T)
+	void Dobierz(vector<string>& T, vector<string> &s, vector<string> &r)
 	{
 		if (T.size() > 0) {
 			Reka.push_back(T[T.size() - 1]);
 			cout <<endl<< "Dobrales " << T[T.size() - 1];
 			T.pop_back();
+			SprawdzStosy(s, r);
 		}
 		else cout << "Brak kart, nie mozna dobrac";
 	}
-	void Dobierz_komp(vector<string> &T)
+	void Dobierz_komp(vector<string> &T, vector<string> s, vector<string>r)
 	{
 		if (T.size() > 0) {
+
 			Reka.push_back(T[T.size() - 1]);
 			T.pop_back();
+			SprawdzStosy(s, r);
 		}
 		else cout << "Brak kart, nie mozna dobrac";
 	}
@@ -93,7 +97,8 @@ public:
 		
 	}
 
-	void Wolanie(vector<string>& R1, vector<string>& R2, vector<string>& V, vector<string>S1, vector<string>S2) {
+	void Wolanie(vector<string>& R1, vector<string>& R2, vector<string>& V, vector<string>&S1, vector<string>&S2) {
+		if (R1.size() == 0) return;
 		string pytanie;
 		cout << endl<< "Pytaj o: ";
 		cin >> pytanie;
@@ -110,7 +115,7 @@ public:
 			}
 			else {
 				cout << "Komputer: nie mam";
-				Dobierz(V);
+				Dobierz(V,S1,R1);
 			}
 		}
 		else {
@@ -120,23 +125,24 @@ public:
 
 	}
 
-	void Wolanie_komp(vector<string>& R1, vector<string>& R2, vector<string>& V, vector<string>S1, vector<string>S2)
+	void Wolanie_komp(vector<string>& R1, vector<string>& R2, vector<string>& V, vector<string>&S1, vector<string>&S2)
 	{
+		if (R2.size() == 0) return;
 		string pytanie;
 		srand(time(0));
-		int ran = rand() % R1.size();
-		pytanie = R1[ran].substr(0, R1[ran].size()-1);
+		int ran = rand() % R2.size();
+		pytanie = R2[ran].substr(0, R2[ran].size()-1);
 		cout<<endl<<"Komputer pyta o: "<< pytanie << " "<<endl;
-		if (CzyNaRece(R2, pytanie))
+		if (CzyNaRece(R1, pytanie))
 		{
-			SprawdzStosy(S1,R2);
-			Przekaz(R1, R2, pytanie);	
-			wyswietlanie(R2, R1, S1, S2);
+			Przekaz(R2, R1, pytanie);
+			SprawdzStosy(S2,R2);	
+			wyswietlanie(R1, R2, S1, S2);
 			Wolanie_komp(R1, R2, V, S1, S2);		
 		}
 		else {
 			
-			Dobierz_komp(V);
+			Dobierz_komp(V, S2,R1);
 		}
 	}
 private:
@@ -172,26 +178,56 @@ void Rozdanie(vector<string> &T, vector<string> &R1, vector<string> &R2) {
 void wyswietlanie(vector<string>R1, vector<string>R2, vector<string>S1, vector<string>S2)
 {
 	cout << endl;
-	if (S2.size() == 0) cout << "Stosy komputera: brak"<<endl;
+	if (S2.size() == 0)
+	{
+		cout << "Stosy komputera: brak" << endl;
+		cout << "Reka komputera: ";
+		for (int i = 0; i < R2.size(); i++)
+			cout << R2[i] << " ";
+		cout << endl;
+	}
 		else {
 			cout << "Stosy komputera: ";
 			for (int i = 0; i < S2.size(); i++) cout << S2[i] << " ";
 			cout << endl;
+			cout << "Reka komputera: ";
+			for (int i = 0; i < R2.size(); i++)
+				cout << R2[i] << " ";
+			cout << endl;
 		}
-	if (S1.size() == 0)
-	{
+	
 		cout << "Reka gracza: ";
 		for (int i = 0; i < R1.size(); i++)
 			cout << R1[i] << " ";
-	}
-	else {
+
+		if (S1.size() != 0)
+		{
+			cout << "+ Stosy:";
+			for (int i = 0; i < S1.size(); i++)
+				cout << S1[i] << " ";
+		}
+			 
+		cout << endl<<"****************"<<endl;
+		for (int i = 0; i < S2.size(); i++) cout << S2[i] << " ";
+		cout << endl;
+		cout << "------------------"<<endl;
+		for (int i = 0; i < S1.size(); i++) cout << S1[i] << " ";
+		cout << endl << "****************" << endl;
+	
+	/*else {
 		cout << "Reka gracza: ";
 		for (int i = 0; i < R1.size(); i++)
 			cout << R1[i] << " ";
 		cout << "+ Stosy:";
 		for (int i = 0; i < S1.size(); i++)
 			cout << S1[i] << " ";
-	}
+		cout << endl << "****************" << endl;
+		for (int i = 0; i < S2.size(); i++) cout << S2[i] << " ";
+		cout << endl;
+		cout << "------------------" << endl;
+		for (int i = 0; i < S1.size(); i++) cout << S1[i] << " ";
+		cout << endl << "****************" << endl;
+	}*/
 }
 int main()
 {
@@ -208,13 +244,14 @@ int main()
 	Gracz pc;
 
 	Rozdanie(Talia, ja.Reka, pc.Reka);
-	wyswietlanie(ja.Reka, pc.Reka, ja.Stosy, pc.Stosy);
-	while (Talia.size()>0)
+	while (!(Talia.size() == 0 && (ja.Reka.size() == 0 || pc.Reka.size() == 0)))
 	{
 		cout << endl;
-		ja.Wolanie(ja.Reka, pc.Reka, Talia, ja.Stosy,pc.Stosy);
-		pc.Wolanie_komp(pc.Reka, ja.Reka, Talia, ja.Stosy, pc.Stosy);
 		wyswietlanie(ja.Reka, pc.Reka, ja.Stosy, pc.Stosy);
+		ja.Wolanie(ja.Reka, pc.Reka, Talia, ja.Stosy,pc.Stosy);
+
+		if (Talia.size() == 0 && (ja.Reka.size() == 0 || pc.Reka.size() == 0))break;
+		pc.Wolanie_komp(ja.Reka, pc.Reka, Talia, ja.Stosy, pc.Stosy);
 
 	}
 	if (ja.Stosy.size() > pc.Stosy.size())
